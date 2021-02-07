@@ -2,7 +2,7 @@ name: Healthcheck
 
 on:
   schedule:
-    - cron:  '*/15 * * * *'
+    - cron:  '* * * * 100'
 
 jobs:
   simple_deployment_pipeline:

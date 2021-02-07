@@ -37,9 +37,9 @@ jobs:
           heroku_app_name: "pokedex-ci"
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           remote_branch: master
-#          healthcheck: "https://pokedex-ci.herokuapp.com/health"
-#          checkstring: "ok"
-#          rollbackonhealthcheckfailed: true
+          healthcheck: "https://pokedex-ci.herokuapp.com/health"
+          checkstring: "ok"
+          rollbackonhealthcheckfailed: true
       - uses: actions/checkout@v2
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
