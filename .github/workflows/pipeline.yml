@@ -12,6 +12,13 @@ jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-18.04
     steps:
+      - uses: 8398a7/action-slack@v3 # For faliures
+        if: failure()
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
@@ -47,13 +54,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: "patch"
-      - uses: 8398a7/action-slack@v3 # For faliures
-        if: failure()
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       - uses: 8398a7/action-slack@v3 # For succesful deploys
         if: ${{ success() && github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
         with:
