@@ -52,6 +52,14 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author
+          custom_payload: |
+            {
+              username: 'Github CI',
+              attachments: [{
+                color: 'good',
+                text: `Deployed changes by ${process.env.AS_AUTHOR} to https://pokedex-ci.herokuapp.com/ (${process.env.AS_COMMIT})`
+              }]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       - uses: 8398a7/action-slack@v3 # For faliures
@@ -59,6 +67,14 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          custom_payload: |
+            {
+              username: 'Github CI',
+              attachments: [{
+                color: 'bad',
+                text: `Build failed by ${process.env.AS_AUTHOR} (${process.env.AS_COMMIT})`
+              }]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
         
