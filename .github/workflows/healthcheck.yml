@@ -1,0 +1,16 @@
+name: Healthcheck
+
+on:
+  schedule:
+    - cron:  '*/15 * * * *'
+
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Healthcheck
+      uses: jtalk/url-health-check-action@v1.4
+      with:
+        url: https://pokedex-ci.herokuapp.com/health
+        follow-redirect: no
+        retry-delay: 5s
