@@ -47,3 +47,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: "patch"
+      - uses: 8398a7/action-slack@v3 # For faliures
+        if: failure()
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      - uses: 8398a7/action-slack@v3 # For succesful deploys
+        if: ${{ success() && github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author
+          custom_payload: |
+            {
+              username: 'Github CI',
+              attachments: [{
+                color: 'good',
+                text: `Deployed changes by ${process.env.AS_AUTHOR} to https://pokedex-ci.herokuapp.com/ (${process.env.AS_COMMIT})`
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        
